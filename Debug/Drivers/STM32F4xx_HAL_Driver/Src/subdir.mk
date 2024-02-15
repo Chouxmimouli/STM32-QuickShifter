@@ -24,26 +24,6 @@ C_SRCS += \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c 
 
-OBJS += \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o \
-./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.o 
-
 C_DEPS += \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.d \
@@ -63,6 +43,26 @@ C_DEPS += \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.d 
+
+OBJS += \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

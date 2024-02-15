@@ -77,6 +77,136 @@ int8_t PrevEngagedGear= 0;
 bool KillSwitch = 0;
 bool GearShiftFail = 0;
 
+class Shifter {
+	void Calibrate() {
+	  	 Timer3 = __HAL_TIM_GET_COUNTER(&htim3);
+	  	 if (Timer3 >= 15000){
+	  		 CalibratedShifterPosition = ShifterPosition;
+	  		 HAL_TIM_Base_Stop(&htim3);
+	  		 TIM3->CNT = 0;
+	  	 }
+	}
+
+	int GetPositon(uint16_t *pAdc_buf){
+	     uint32_t AdcAverage = 0;
+	     for (int i = 0; i < ADC_BUF_LEN; i++) {
+	         AdcAverage += *pAdc_buf;
+	         pAdc_buf += 1;
+	     }
+	     AdcAverage /= ADC_BUF_LEN;
+	     return AdcAverage;
+	}
+
+};
+
+class Gear {
+	int GetValue(){
+	int gearValue = 99; // default value if none of the pins are low or selector barrel in between 2 gears
+
+	    switch(HAL_GPIO_ReadPin(InGear0_GPIO_Port, InGear0_Pin)) {
+	    	  case GPIO_PIN_RESET: // pin is low so gear is engaged
+	    		  gearValue = 0;
+	    		  break;
+	    	  case GPIO_PIN_SET: // pin is high
+	    		  switch(HAL_GPIO_ReadPin(InGear1_GPIO_Port, InGear1_Pin)) {
+	    		  	  case GPIO_PIN_RESET:
+	    		  		  gearValue = 1;
+	    		  		  break;
+	    		  	  case GPIO_PIN_SET:
+	    		  		  switch(HAL_GPIO_ReadPin(InGear2_GPIO_Port, InGear2_Pin)) {
+	    		  		  	  case GPIO_PIN_RESET:
+	    		  		  		  gearValue = 2;
+	    		  		  		  break;
+	    		  		  	  case GPIO_PIN_SET:
+	    		  		  		  switch(HAL_GPIO_ReadPin(InGear3_GPIO_Port, InGear3_Pin)) {
+	    		  		  		  	  case GPIO_PIN_RESET:
+	    		  		  		  		  gearValue = 3;
+	    		  		  		  		  break;
+	    		  		  		  	  case GPIO_PIN_SET:
+	    		  		  		  		  switch(HAL_GPIO_ReadPin(InGear4_GPIO_Port, InGear4_Pin)) {
+	    		  		  		  		  	  case GPIO_PIN_RESET:
+	    		  		  		  		  		  gearValue = 4;
+	                  	                      break;
+	    		  		  		  		  	  case GPIO_PIN_SET:
+	    		  		  		  		  		  break;
+	    		  		  		  		  }
+	    		  		  		  		  break;
+	    		  		  		  }
+	    		  		  		  break;
+	    		  		  }
+	    		  		  break;
+	    		  }
+	    		  break;
+	    }
+	    return gearValue;
+	}
+
+	void Reset(){
+	  	  HAL_GPIO_WritePin(OutGear0_GPIO_Port, OutGear0_Pin, GPIO_PIN_RESET);
+	  	  HAL_GPIO_WritePin(OutGear1_GPIO_Port, OutGear1_Pin, GPIO_PIN_RESET);
+	  	  HAL_GPIO_WritePin(OutGear2_GPIO_Port, OutGear2_Pin, GPIO_PIN_RESET);
+	  	  HAL_GPIO_WritePin(OutGear3_GPIO_Port, OutGear3_Pin, GPIO_PIN_RESET);
+	  	  HAL_GPIO_WritePin(OutGear4_GPIO_Port, OutGear4_Pin, GPIO_PIN_RESET);
+	}
+
+	void Set(){
+	  	  switch(EngagedGear){
+	  		  case 0:
+	  			  ResetAllOutputs();
+	  			  HAL_GPIO_WritePin(OutGear0_GPIO_Port, OutGear0_Pin, GPIO_PIN_SET);
+	  			  break;
+	  		  case 1:
+	  			  ResetAllOutputs();
+	  			  HAL_GPIO_WritePin(OutGear1_GPIO_Port, OutGear1_Pin, GPIO_PIN_SET);
+	  			  break;
+	  		  case 2:
+	  			  ResetAllOutputs();
+	  			  HAL_GPIO_WritePin(OutGear2_GPIO_Port, OutGear2_Pin, GPIO_PIN_SET);
+	  			  break;
+	  		  case 3:
+	  			  ResetAllOutputs();
+	  			  HAL_GPIO_WritePin(OutGear3_GPIO_Port, OutGear3_Pin, GPIO_PIN_SET);
+	  			  break;
+	  		  case 4:
+	  			  ResetAllOutputs();
+	  			  HAL_GPIO_WritePin(OutGear4_GPIO_Port, OutGear4_Pin, GPIO_PIN_SET);
+	  			  break;
+	  	  }
+	}
+
+};
+
+
+    bool WaitForUpShift() {
+  	  while ((EngagedGear != (PrevEngagedGear + 1)) || (ShifterPosition > (CalibratedShifterPosition - 200))){
+  		  EngagedGear = GetGearValue();
+  		  ShifterPosition = GetShifterPosition(*pAdc_buf);
+
+  		  // Up shift Failed, going back into lower gear
+  		  if (ShifterPosition > (CalibratedShifterPosition + DownShiftDeadZone)) {
+  			  PrevEngagedGear++;
+  			  return true;
+  			  break;
+  		  }
+  	  }
+  	  return false;
+    }
+
+    bool WaitForDownShift(){
+  	  while ((EngagedGear != (PrevEngagedGear - 1)) || (ShifterPosition < (CalibratedShifterPosition + 200))){
+  		  EngagedGear = GetGearValue();
+  		  ShifterPosition = GetShifterPosition(*pAdc_buf);
+
+  		  // Down shift Failed, going back into upper gear
+  		  if (ShifterPosition < (CalibratedShifterPosition - UpShiftDeadZone)) {
+  			  PrevEngagedGear--;
+  			  return true;
+  			  break;
+  		  }
+  	  }
+  	  return false;
+    }
+
 /* USER CODE END 0 */
 
 /**
@@ -114,136 +244,13 @@ int main(void)
 
   HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adc_buf, ADC_BUF_LEN);
 
-    void TryRecalibrateSensor(){
-    	  Timer3 = __HAL_TIM_GET_COUNTER(&htim3);
-    	  if (Timer3 >= 15000){
-    		  CalibratedShifterPosition = ShifterPosition;
-    		  HAL_TIM_Base_Stop(&htim3);
-    		  TIM3->CNT = 0;
-    	  }
-    }
-
-    int GetShifterPosition(uint16_t *pAdc_buf){
-       uint32_t AdcAverage = 0;
-       for (int i = 0; i < ADC_BUF_LEN; i++) {
-           AdcAverage += *pAdc_buf;
-           pAdc_buf += 1;
-       }
-       AdcAverage /= ADC_BUF_LEN;
-       return AdcAverage;
-    }
-
-    int GetGearValue(){
-  	  int gearValue = 99; // default value if none of the pins are low or selector barrel in between 2 gears
-
-        switch(HAL_GPIO_ReadPin(InGear0_GPIO_Port, InGear0_Pin)) {
-        	  case GPIO_PIN_RESET: // pin is low so gear is engaged
-        		  gearValue = 0;
-        		  break;
-        	  case GPIO_PIN_SET: // pin is high
-        		  switch(HAL_GPIO_ReadPin(InGear1_GPIO_Port, InGear1_Pin)) {
-        		  	  case GPIO_PIN_RESET:
-        		  		  gearValue = 1;
-        		  		  break;
-        		  	  case GPIO_PIN_SET:
-        		  		  switch(HAL_GPIO_ReadPin(InGear2_GPIO_Port, InGear2_Pin)) {
-        		  		  	  case GPIO_PIN_RESET:
-        		  		  		  gearValue = 2;
-        		  		  		  break;
-        		  		  	  case GPIO_PIN_SET:
-        		  		  		  switch(HAL_GPIO_ReadPin(InGear3_GPIO_Port, InGear3_Pin)) {
-        		  		  		  	  case GPIO_PIN_RESET:
-        		  		  		  		  gearValue = 3;
-        		  		  		  		  break;
-        		  		  		  	  case GPIO_PIN_SET:
-        		  		  		  		  switch(HAL_GPIO_ReadPin(InGear4_GPIO_Port, InGear4_Pin)) {
-        		  		  		  		  	  case GPIO_PIN_RESET:
-        		  		  		  		  		  gearValue = 4;
-                      	                      break;
-        		  		  		  		  	  case GPIO_PIN_SET:
-        		  		  		  		  		  break;
-        		  		  		  		  }
-        		  		  		  		  break;
-        		  		  		  }
-        		  		  		  break;
-        		  		  }
-        		  		  break;
-        		  }
-        		  break;
-        }
-        return gearValue;
-    }
-
-    void ResetAllOutputs(){
-  	  HAL_GPIO_WritePin(OutGear0_GPIO_Port, OutGear0_Pin, GPIO_PIN_RESET);
-  	  HAL_GPIO_WritePin(OutGear1_GPIO_Port, OutGear1_Pin, GPIO_PIN_RESET);
-  	  HAL_GPIO_WritePin(OutGear2_GPIO_Port, OutGear2_Pin, GPIO_PIN_RESET);
-  	  HAL_GPIO_WritePin(OutGear3_GPIO_Port, OutGear3_Pin, GPIO_PIN_RESET);
-  	  HAL_GPIO_WritePin(OutGear4_GPIO_Port, OutGear4_Pin, GPIO_PIN_RESET);
-    }
-
-    void SetGearIndicator(){
-  	  switch(EngagedGear){
-  		  case 0:
-  			  ResetAllOutputs();
-  			  HAL_GPIO_WritePin(OutGear0_GPIO_Port, OutGear0_Pin, GPIO_PIN_SET);
-  			  break;
-  		  case 1:
-  			  ResetAllOutputs();
-  			  HAL_GPIO_WritePin(OutGear1_GPIO_Port, OutGear1_Pin, GPIO_PIN_SET);
-  			  break;
-  		  case 2:
-  			  ResetAllOutputs();
-  			  HAL_GPIO_WritePin(OutGear2_GPIO_Port, OutGear2_Pin, GPIO_PIN_SET);
-  			  break;
-  		  case 3:
-  			  ResetAllOutputs();
-  			  HAL_GPIO_WritePin(OutGear3_GPIO_Port, OutGear3_Pin, GPIO_PIN_SET);
-  			  break;
-  		  case 4:
-  			  ResetAllOutputs();
-  			  HAL_GPIO_WritePin(OutGear4_GPIO_Port, OutGear4_Pin, GPIO_PIN_SET);
-  			  break;
-  	  }
-    }
-
-    bool WaitForUpShift() {
-  	  while ((EngagedGear != (PrevEngagedGear + 1)) || (ShifterPosition > (CalibratedShifterPosition - 200))){
-  		  EngagedGear = GetGearValue();
-  		  ShifterPosition = GetShifterPosition(*pAdc_buf);
-
-  		  // Up shift Failed, going back into lower gear
-  		  if (ShifterPosition > (CalibratedShifterPosition + DownShiftDeadZone)) {
-  			  PrevEngagedGear++;
-  			  return true;
-  			  break;
-  		  }
-  	  }
-  	  return false;
-    }
-
-    bool WaitForDownShift(){
-  	  while ((EngagedGear != (PrevEngagedGear - 1)) || (ShifterPosition < (CalibratedShifterPosition + 200))){
-  		  EngagedGear = GetGearValue();
-  		  ShifterPosition = GetShifterPosition(*pAdc_buf);
-
-  		  // Down shift Failed, going back into upper gear
-  		  if (ShifterPosition < (CalibratedShifterPosition - UpShiftDeadZone)) {
-  			  PrevEngagedGear--;
-  			  return true;
-  			  break;
-  		  }
-  	  }
-  	  return false;
-    }
-
     CalibratedShifterPosition = GetShifterPosition(*pAdc_buf);
 
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 
     //Set the initial EngagedGear
     EngagedGear = GetGearValue();
-    SetGearIndicator(&EngagedGear);
+    SetGearIndicator();
 
     HAL_TIM_Base_Start(&htim3);
 

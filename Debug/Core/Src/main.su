@@ -1,14 +1,14 @@
-../Core/Src/main.c:117:10:TryRecalibrateSensor	16	static
-../Core/Src/main.c:86:5:main	16	static
-../Core/Src/main.c:126:9:GetShifterPosition	24	static
-../Core/Src/main.c:136:9:GetGearValue	24	static
-../Core/Src/main.c:177:10:ResetAllOutputs	16	static
-../Core/Src/main.c:185:10:SetGearIndicator	16	static
-../Core/Src/main.c:210:10:WaitForUpShift	24	static
-../Core/Src/main.c:225:10:WaitForDownShift	24	static
-../Core/Src/main.c:328:6:SystemClock_Config	88	static
-../Core/Src/main.c:375:13:MX_ADC1_Init	24	static
-../Core/Src/main.c:427:13:MX_TIM3_Init	32	static
-../Core/Src/main.c:470:13:MX_DMA_Init	16	static
-../Core/Src/main.c:488:13:MX_GPIO_Init	40	static
-../Core/Src/main.c:543:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.cpp:80:6:void TryRecalibrateSensor()	8	static
+../Core/Src/main.cpp:89:7:int GetShifterPosition(uint16_t*)	24	static
+../Core/Src/main.cpp:99:7:int GetGearValue()	16	static
+../Core/Src/main.cpp:140:10:void ResetAllOutputs()	8	static
+../Core/Src/main.cpp:148:10:void SetGearIndicator()	8	static
+../Core/Src/main.cpp:173:10:bool WaitForUpShift()	8	static
+../Core/Src/main.cpp:188:10:bool WaitForDownShift()	8	static
+../Core/Src/main.cpp:209:5:int main()	8	static
+../Core/Src/main.cpp:328:6:void SystemClock_Config()	88	static
+../Core/Src/main.cpp:375:13:void MX_ADC1_Init()	24	static
+../Core/Src/main.cpp:427:13:void MX_TIM3_Init()	32	static
+../Core/Src/main.cpp:470:13:void MX_DMA_Init()	16	static
+../Core/Src/main.cpp:488:13:void MX_GPIO_Init()	40	static
+../Core/Src/main.cpp:543:6:void Error_Handler()	4	static,ignoring_inline_asm
