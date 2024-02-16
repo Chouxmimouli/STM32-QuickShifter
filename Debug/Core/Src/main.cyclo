@@ -1,14 +1,19 @@
-../Core/Src/main.cpp:80:6:void TryRecalibrateSensor()	2
-../Core/Src/main.cpp:89:7:int GetShifterPosition(uint16_t*)	2
-../Core/Src/main.cpp:99:7:int GetGearValue()	11
-../Core/Src/main.cpp:140:10:void ResetAllOutputs()	1
-../Core/Src/main.cpp:148:10:void SetGearIndicator()	6
-../Core/Src/main.cpp:173:10:bool WaitForUpShift()	4
-../Core/Src/main.cpp:188:10:bool WaitForDownShift()	4
-../Core/Src/main.cpp:209:5:int main()	8
-../Core/Src/main.cpp:328:6:void SystemClock_Config()	3
-../Core/Src/main.cpp:375:13:void MX_ADC1_Init()	3
-../Core/Src/main.cpp:427:13:void MX_TIM3_Init()	4
-../Core/Src/main.cpp:470:13:void MX_DMA_Init()	1
-../Core/Src/main.cpp:488:13:void MX_GPIO_Init()	1
-../Core/Src/main.cpp:543:6:void Error_Handler()	1
+C:\ST\STM32CubeIDE_1.13.2\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.100.202309141235\tools\arm-none-eabi\include\c++\11.3.1\arm-none-eabi\thumb\v7e-m+fp\hard\bits\gthr-default.h:229:1:int __gthread_key_delete(__gthread_key_t)	1
+../Core/Src/main.cpp:83:11:uint16_t Shifter::GetPosition()	2
+../Core/Src/main.cpp:92:7:void Shifter::Calibrate()	1
+../Core/Src/main.cpp:96:7:void Shifter::TryRecalibrate()	2
+../Core/Src/main.cpp:107:7:void Gear::Reset()	1
+../Core/Src/main.cpp:119:7:void Gear::Get()	11
+../Core/Src/main.cpp:158:7:void Gear::Set()	6
+../Core/Src/main.cpp:189:7:void WaitFor::UpShift(Gear*, Shifter*)	2
+../Core/Src/main.cpp:203:7:void WaitFor::DownShift(Gear*, Shifter*)	2
+../Core/Src/main.cpp:224:5:int main()	8
+../Core/Src/main.cpp:341:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:388:13:void MX_ADC1_Init()	3
+../Core/Src/main.cpp:440:13:void MX_TIM3_Init()	4
+../Core/Src/main.cpp:483:13:void MX_DMA_Init()	1
+../Core/Src/main.cpp:501:13:void MX_GPIO_Init()	1
+../Core/Src/main.cpp:556:6:void Error_Handler()	1
+../Core/Src/main.cpp:565:1:void __static_initialization_and_destruction_0(int, int)	5
+../Core/Src/main.cpp:565:1:cpp)	1
+../Core/Src/main.cpp:565:1:cpp)	1

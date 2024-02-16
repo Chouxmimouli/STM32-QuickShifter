@@ -84,8 +84,8 @@ all: main-build
 main-build: BlackPill-QuickShifter.elf secondary-outputs
 
 # Tool invocations
-BlackPill-QuickShifter.elf BlackPill-QuickShifter.map: $(OBJS) $(USER_OBJS) C:\Users\alixd\git\STM32-QuickShifter\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "BlackPill-QuickShifter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\alixd\git\STM32-QuickShifter\STM32F411CEUX_FLASH.ld" -Wl,-Map="BlackPill-QuickShifter.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+BlackPill-QuickShifter.elf BlackPill-QuickShifter.map: $(OBJS) $(USER_OBJS) C:\Users\alixd\STM32CubeIDE\workspace_1.13.2\BlackPill-QuickShifter\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "BlackPill-QuickShifter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\alixd\STM32CubeIDE\workspace_1.13.2\BlackPill-QuickShifter\STM32F411CEUX_FLASH.ld" -Wl,-Map="BlackPill-QuickShifter.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
