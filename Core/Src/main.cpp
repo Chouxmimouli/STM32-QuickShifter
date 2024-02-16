@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.c
+  * @file           : main.cpp
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -113,8 +113,8 @@ private:
 	}
 
 public:
-	uint8_t Selected = 0; // Engaged Gear
-	uint8_t PrevSelected = 0;
+	uint8_t Selected = 0; // Engaged gear
+	uint8_t PrevSelected = 0; // Previously engaged gear
 
 	void Get() {
 		Selected = 99; // default value if none of the pins are low or selector barrel in between 2 gears
