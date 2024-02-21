@@ -2,18 +2,18 @@ C:\ST\STM32CubeIDE_1.13.2\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.external
 ../Core/Src/main.cpp:86:11:uint16_t Shifter::GetPosition()	2
 ../Core/Src/main.cpp:96:7:void Shifter::Calibrate()	1
 ../Core/Src/main.cpp:100:7:void Shifter::TryRecalibrate()	2
-../Core/Src/main.cpp:111:7:void Gear::Reset()	1
-../Core/Src/main.cpp:121:7:void Gear::Get()	11
-../Core/Src/main.cpp:160:7:void Gear::Set()	6
-../Core/Src/main.cpp:189:7:void WaitFor::UpShift(Gear*, Shifter*)	4
-../Core/Src/main.cpp:203:7:void WaitFor::DownShift(Gear*, Shifter*)	4
-../Core/Src/main.cpp:224:5:int main()	8
-../Core/Src/main.cpp:341:6:void SystemClock_Config()	3
-../Core/Src/main.cpp:388:13:void MX_ADC1_Init()	3
-../Core/Src/main.cpp:440:13:void MX_TIM3_Init()	4
-../Core/Src/main.cpp:483:13:void MX_DMA_Init()	1
-../Core/Src/main.cpp:501:13:void MX_GPIO_Init()	1
-../Core/Src/main.cpp:556:6:void Error_Handler()	1
-../Core/Src/main.cpp:565:1:void __static_initialization_and_destruction_0(int, int)	5
-../Core/Src/main.cpp:565:1:cpp)	1
-../Core/Src/main.cpp:565:1:cpp)	1
+../Core/Src/main.cpp:112:7:void Gear::Reset()	1
+../Core/Src/main.cpp:122:7:void Gear::Get()	11
+../Core/Src/main.cpp:161:7:void Gear::Set()	6
+../Core/Src/main.cpp:190:7:void WaitFor::UpShift(Gear*, Shifter*)	4
+../Core/Src/main.cpp:204:7:void WaitFor::DownShift(Gear*, Shifter*)	4
+../Core/Src/main.cpp:225:5:int main()	8
+../Core/Src/main.cpp:344:6:void SystemClock_Config()	3
+../Core/Src/main.cpp:391:13:void MX_ADC1_Init()	3
+../Core/Src/main.cpp:443:13:void MX_TIM3_Init()	4
+../Core/Src/main.cpp:486:13:void MX_DMA_Init()	1
+../Core/Src/main.cpp:504:13:void MX_GPIO_Init()	1
+../Core/Src/main.cpp:559:6:void Error_Handler()	1
+../Core/Src/main.cpp:568:1:void __static_initialization_and_destruction_0(int, int)	5
+../Core/Src/main.cpp:568:1:cpp)	1
+../Core/Src/main.cpp:568:1:cpp)	1

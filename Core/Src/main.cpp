@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.cpp
+  * @file           : main.c
   * @brief          : Main program body
   ******************************************************************************
   * @attention
@@ -79,10 +79,10 @@ uint8_t EngagedGear = 0;
 uint8_t PrevEngagedGear = 0;
 uint16_t CalibratedShifterPosition = 0;
 uint16_t ShifterPosition = 0; // For debugging
+uint16_t Timer3 = 0;
 
 class Shifter {
 public:
-
 	uint16_t GetPosition(){
 	     uint32_t AdcAverage = 0;
 	     for (int i = 0; i < ADC_BUF_LEN; i++) {
@@ -98,6 +98,7 @@ public:
 	}
 
 	void TryRecalibrate() {
+		Timer3 = __HAL_TIM_GET_COUNTER(&htim3);
 	  	if (__HAL_TIM_GET_COUNTER(&htim3) >= 15000){
 	  		Calibrate();
 	  		HAL_TIM_Base_Stop(&htim3);
@@ -261,6 +262,7 @@ int main(void)
   //Set the initial EngagedGear
   gear.Get();
   gear.Set();
+  HAL_Delay(500);
   shifter.Calibrate();
 
   HAL_TIM_Base_Start(&htim3);
@@ -277,60 +279,61 @@ int main(void)
 	  // Up shift
 	  if (shifter.GetPosition() < (CalibratedShifterPosition - UpShiftDeadZone)) {
 		  PrevEngagedGear = EngagedGear;
-	  	  ExitToUpShift:
+		  ExitToUpShift:
 
-	  	  if (EngagedGear != 0){
-	  		  HAL_GPIO_WritePin(KillSwitch_GPIO_Port, KillSwitch_Pin, GPIO_PIN_SET);
-	  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-	  		  KillSwitch = 1;
+		  if (EngagedGear != 0){
+			  HAL_GPIO_WritePin(KillSwitch_GPIO_Port, KillSwitch_Pin, GPIO_PIN_SET);
+			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+			  KillSwitch = 1;
 
-	  		waitFor.UpShift(&gear, &shifter);
-	  		  if (GearShiftFail == 1) {
-	  			  GearShiftFail = 0;
-	  			  goto ExitToDownShift;
-	  		  }
+			waitFor.UpShift(&gear, &shifter);
+			  if (GearShiftFail == 1) {
+				  GearShiftFail = 0;
+				  goto ExitToDownShift;
+			  }
 
-	  		  gear.Get();
-	  		  gear.Set();
+			  gear.Get();
+			  gear.Set();
 
-	  		  HAL_Delay(IgnitionCutTime);
-	  		  HAL_GPIO_WritePin(KillSwitch_GPIO_Port, KillSwitch_Pin, GPIO_PIN_RESET);
-	  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-	  		  KillSwitch = 0;
-	  	  }
-	  	  else {
-	  		  waitFor.UpShift(&gear, &shifter);
-	  		  gear.Set();
-	  	  }
+			  HAL_Delay(IgnitionCutTime);
+			  HAL_GPIO_WritePin(KillSwitch_GPIO_Port, KillSwitch_Pin, GPIO_PIN_RESET);
+			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+			  KillSwitch = 0;
+		  }
+		  else {
+			  waitFor.UpShift(&gear, &shifter);
+			  gear.Set();
+		  }
 
-	  	  while (shifter.GetPosition() < (CalibratedShifterPosition - (UpShiftDeadZone - 10)));
+		  while (shifter.GetPosition() < (CalibratedShifterPosition - (UpShiftDeadZone - 10)));
 
-	  	  TIM3->CNT = 0;
-	  	  HAL_TIM_Base_Start(&htim3);
-	  }
+		  TIM3->CNT = 0;
+		  HAL_TIM_Base_Start(&htim3);
+		}
 
-	  // Down shift
-	  if (shifter.GetPosition() > (CalibratedShifterPosition + DownShiftDeadZone)){
+		// Down shift
+		if (shifter.GetPosition() > (CalibratedShifterPosition + DownShiftDeadZone)){
 		  PrevEngagedGear = EngagedGear;
-	  	  ExitToDownShift:
+		  ExitToDownShift:
 
 		  waitFor.DownShift(&gear, &shifter);
-	  	  if (GearShiftFail == 1) {
-	  		  GearShiftFail = 0;
-	  		  goto ExitToUpShift;
-	  	  }
+		  if (GearShiftFail == 1) {
+			  GearShiftFail = 0;
+			  goto ExitToUpShift;
+		  }
 
-	  	  gear.Set();
+		  gear.Set();
 
-	  	  while (shifter.GetPosition() > (CalibratedShifterPosition + (DownShiftDeadZone - 10)));
+		  while (shifter.GetPosition() > (CalibratedShifterPosition + (DownShiftDeadZone - 10)));
 
-	  	  TIM3->CNT = 0;
-	  	  HAL_TIM_Base_Start(&htim3);
-	  }
-  }
+		  TIM3->CNT = 0;
+		  HAL_TIM_Base_Start(&htim3);
+		}
+  	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
   /* USER CODE END 3 */
 }
 
@@ -410,7 +413,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
